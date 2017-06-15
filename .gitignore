@@ -44,3 +44,5 @@ venv
 # PyCharm
 .idea
 
+# local
+hello.py

@@ -42,5 +42,17 @@
 
   - [x] 问题1:attribute refresh operation cannot proceed
   - 解决方案:可能是在当前线程重新加入程序上下文导致session失效,改为新线程发送邮件解决
-  - [ ] 问题1:发送邮件时间过久(5s)
+  - [ ] 问题2:发送邮件时间过久(5s)
   - 解决方案:暂未解决,使用新线程比原来10s快一些但网页刷新仍然显示有明显延迟
+
+- structure:
+  - **重新组织程序结构**
+
+  - [x] 问题1:No module named 'email.Utils'; 'email' is not a package
+  - 解决方案:个人的py文件最好不要和python module相同
+  - [ ] 问题2:对于import的使用规则不太理解,app.__init__直接from config import config而不是from ..config
+  - 解决方案:暂未解决
+  - [x] 问题3:'function' object has no attribute 'route'
+  - 解决方案:蓝本使用别名,不要与蓝本中的视图函数重名
+  - [x] 问题4:werkzeug.routing.BuildError: Could not build url for endpoint 'friends'
+  - 解决方案:base模版中的url_for也要做相应修改

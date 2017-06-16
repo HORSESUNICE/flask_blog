@@ -9,7 +9,7 @@
 - homepage:
   - **将bootstrap的example改写为Jinja模版,用到了bootstrap的navbar和footer,自己在css中增加了背景图片**
   - [ ] 问题1:设置背景图片后第一次访问网站图片响应比较慢,可能是图片较大的原因(2.2M)
-  -     解决方案:暂时还没有处理
+  - 解决方案:暂时还没有处理
 
 - form:
   - **在模版中增加了表单,并且将post请求利用url_for重定向,虽然用session记录了表单内容但没有实际使用**
@@ -25,17 +25,17 @@
   - 注意事项4:deploy中用到的account记得要定义在deploy之前
 
   - [x] 问题1:UserWarning: SQLALCHEMY_DATABASE_URI not set.
-  -     解决方案:config URI要在拓展SQLAlchemy之前
+  - 解决方案:config URI要在拓展SQLAlchemy之前
   - [x] 问题2:FSADeprecationWarning
-  -     解决方案:增加一行配置app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+  - 解决方案:增加一行配置app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
   - [x] 问题3:Incorrect string value
-  -     解决方案:更改数据库默认字符设置 alter database flask_blog CHARACTER SET utf8;
+  - 解决方案:更改数据库默认字符设置 alter database flask_blog CHARACTER SET utf8;
   - [ ] 问题4:session中试图存入数据库查询得到的Friend对象,使用时发现session不能正确存储这样的对象
-  -     解决方案:暂未解决
+  - 解决方案:暂未解决
   - [x] 问题5:db upgrade前先要在shell中create_all()
-  -     解决方案:可能是命令输错了,正确创建迁移脚本后可以正确使用python blog.py deploy默认配置
+  - 解决方案:可能是命令输错了,正确创建迁移脚本后可以正确使用python blog.py deploy默认配置
   - [ ] 问题6:如果把迁移函数account放在另一个py文件中会导致shell命令失败
-        解决方案:尚未解决,应该是再次commit重复数据导致的问题,直接添加相同数据会报错,需要从数据库查询出数据修改后再次commit才能成功,但对于不同类型数据的修改提交没有很好的一致的方案所以还没有解决
+  - 解决方案:尚未解决,应该是再次commit重复数据导致的问题,直接添加相同数据会报错,需要从数据库查询出数据修改后再次commit才能成功,但对于不同类型数据的修改提交没有很好的一致的方案所以还没有解决
 
 - email:
   - **增加发送邮件功能**

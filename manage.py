@@ -16,7 +16,8 @@ manager.add_command("shell", Shell(make_context=make_shell_context))
 manager.add_command('db', MigrateCommand)
 
 def account():
-    from hello import db, Game, Friend, Gameaccount
+    from app import db
+    from app.models import Game, Friend, Gameaccount
     # db.create_all()
     lol = Game(name='LOL')
     battle = Game(name='BATTLE')
@@ -25,7 +26,7 @@ def account():
     man1 = Friend(name='m1',realname='man1')
     man2 = Friend(name='m2',realname='man2')
     man3 = Friend(name='m3',realname='man3')
-    man4 = Friend(name='m4', realname='man5')
+    man4 = Friend(name='m4', realname='man4')
     man5 = Friend(name='m5', realname='man5')
     man6 = Friend(name='m6', realname='man6')
 

@@ -40,8 +40,8 @@
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="http://example.com" id="dropdown10" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Projects</a>
               <div class="dropdown-menu" aria-labelledby="dropdown10">
-                <a class="dropdown-item" href="#">Project1</a>
-                <a class="dropdown-item" href="#">Project2</a>
+                <a class="dropdown-item" href="{{ url_for('auth.login') }}">Project1</a>
+                <a class="dropdown-item" href="{{ url_for('auth.register') }}">Register</a>
                 <a class="dropdown-item" href="#">Project3</a>
               </div>
             </li>
@@ -56,6 +56,14 @@
                 <a class="dropdown-item" href="#">Something else here</a>
               </div>
             </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="http://example.com" id="dropdown10" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Account</a>
+              <div class="dropdown-menu" aria-labelledby="dropdown10">
+                <a class="dropdown-item" href="{{ url_for('auth.login') }}">Log in</a>
+                <a class="dropdown-item" href="{{ url_for('auth.logout') }}">Log out</a>
+                <a class="dropdown-item" href="{{ url_for('auth.register') }}">Register</a>
+              </div>
+            </li>
           </ul>
           <form class="form-inline my-2 my-md-0">
             <input class="form-control" type="text" placeholder="Search" aria-label="Search">
@@ -67,6 +75,16 @@
 {%- endblock navbar %}
 
 {% block content -%}
+    <div class="container">
+        {% for message in get_flashed_messages() %}
+        <div class="alert alert-warning">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+{% block mid_content -%}
+{%- endblock mid_content %}
     <footer class="footer">
       <div class="container">
         <p class="text-muted">Template for <a href="https://getbootstrap.com">Bootstrap</a>, modified by <a href="http://www.mayangbin.com">@Epsilon</a>.</p>

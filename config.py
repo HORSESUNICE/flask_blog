@@ -16,11 +16,11 @@ class DevelopmentConfig(Config):
     MAIL_SERVER = 'smtp.qq.com'
     MAIL_PORT = 465
     MAIL_USE_SSL = True
-    MAIL_USERNAME = os.environ.get('MAIL_USERNAME') or 'yourqq@qq.com'
-    MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD') or 'password'
+    MAIL_USERNAME = os.environ.get('MAIL_USERNAME') or 'your@qq.com'
+    MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD') or 'yourpassword'
     MAIL_SUBJECT_PREFIX = '[Epsilon]'
-    MAIL_SENDER = 'Epsilon <yourqq@qq.com>'
-    ADMIN = os.environ.get('ADMIN') or 'yourqq@qq.com'
+    MAIL_SENDER = 'Epsilon <your@qq.com>'
+    ADMIN = os.environ.get('ADMIN') or 'your@qq.com'
 
 class TestingConfig(Config):
     TESTING = True

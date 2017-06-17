@@ -56,3 +56,11 @@
   - 解决方案:蓝本使用别名,不要与蓝本中的视图函数重名
   - [x] 问题4:werkzeug.routing.BuildError: Could not build url for endpoint 'friends'
   - 解决方案:base模版中的url_for也要做相应修改
+
+- login:
+  - **增加了登陆验证以及页面flash消息,为了统一用户更改了friends表增加了role来分级,增加了用户的注册功能,将deploy的部署分散在类中完成,并且新用户需要邮箱验证才能访问部分网站内容,利用装饰器实现视图函数对特定权限用户开放**
+
+  - [x] 问题1:Target database is not up to date.
+  - 解决方案:一般表的小改动可以直接migrate -m,大改更改了表的结构后重新创建了迁移仓库,暂时没有更好的解决方案
+  - [ ] 问题2:由于可能有不同游戏相同的游戏账号,不存在unique列,gameaccount无法便捷地完成查询
+  - 解决方案:暂未解决

@@ -2,9 +2,12 @@ from . import db, login_manager
 
 from werkzeug.security import generate_password_hash, check_password_hash
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+from datetime import datetime
 
 from flask import current_app
 from flask_login import UserMixin, AnonymousUserMixin
+from markdown import markdown
+import bleach
 
 class Permission:
     FOLLOW = 0x01
@@ -84,6 +87,7 @@ class User(UserMixin, db.Model):
     gameaccounts = db.relationship('Gameaccount', backref='user', lazy='dynamic')
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
     confirmed = db.Column(db.Boolean, default=False)
+    posts = db.relationship('Post', backref='author', lazy='dynamic')
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -134,19 +138,20 @@ class User(UserMixin, db.Model):
     def insert_users():
         role1 = Role.query.filter_by(name='Administrator').first()
         role2 = Role.query.filter_by(name='Friend').first()
+        role3 = Role.query.filter_by(name='User').first()
         users = {
             'admin': ('epsilon',
                      role1,
                      'admin',
-                     'admin@qq.com'),
-            'man1': ('m1',
-                     role2,
-                     'man1',
-                     'm1@163.com'),
-            'man2': ('m2',
-                     role2,
-                     'man2',
-                     None),
+                     'email1@qq.com'),
+            'firstman': ('man1',
+                         role2,
+                         'man1',
+                         'email2@163.com'),
+            'secondman': ('man2',
+                          role3,
+                          'man2',
+                          None),
             'man3': ('m3',
                      role2,
                      'man3',
@@ -168,12 +173,67 @@ class User(UserMixin, db.Model):
             db.session.add(user)
         db.session.commit()
 
+    @staticmethod
+    def generate_fake(count=100):
+        from sqlalchemy.exc import IntegrityError
+        from random import seed
+        import forgery_py
+
+        seed()
+        for i in range(count):
+            u = User(email=forgery_py.internet.email_address(),
+                     name=forgery_py.internet.user_name(True),
+                     password=forgery_py.lorem_ipsum.word(),
+                     confirmed=True,
+                     realname=forgery_py.name.full_name())
+            db.session.add(u)
+            try:
+                db.session.commit()
+            except IntegrityError:
+                db.session.rollback()
+
+class Post(db.Model):
+    __tablename__ = 'posts'
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(32))
+    body = db.Column(db.Text)
+    body_html = db.Column(db.Text)
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+
+    @staticmethod
+    def generate_fake(count=100):
+        from random import seed, randint
+        import forgery_py
+
+        seed()
+        user_count = User.query.count()
+        for i in range(count):
+            u = User.query.offset(randint(0, user_count - 1)).first()
+            p = Post(body=forgery_py.lorem_ipsum.sentences(randint(1, 5)),
+                     timestamp=forgery_py.date.date(True),
+                     title=forgery_py.lorem_ipsum.title(randint(1,2)),
+                     author=u)
+            db.session.add(p)
+            db.session.commit()
+
+    @staticmethod
+    def on_changed_body(target, value, oldvalue, initiator):
+        allowed_tags = ['a', 'abbr', 'acronym', 'b', 'blockquote', 'code',
+                        'em', 'i', 'li', 'ol', 'pre', 'strong', 'ul',
+                        'h1', 'h2', 'h3', 'p']
+        target.body_html = bleach.linkify(bleach.clean(
+            markdown(value, output_format='html'),
+            tags=allowed_tags, strip=True))
+
+db.event.listen(Post.body, 'set', Post.on_changed_body)
+
 class Gameaccount(db.Model):
     __tablename__ = 'gameaccounts'
     id = db.Column(db.Integer, primary_key=True)
     account = db.Column(db.String(64), unique=True)
     password = db.Column(db.String(64), unique=False)
-    name_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     game_id = db.Column(db.Integer, db.ForeignKey('games.id'))
 
     def __repr__(self):

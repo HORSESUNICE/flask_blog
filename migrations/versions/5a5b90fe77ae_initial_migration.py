@@ -1,8 +1,8 @@
-"""restructure database
+"""initial migration
 
-Revision ID: e5edc29eefdd
+Revision ID: 5a5b90fe77ae
 Revises: 
-Create Date: 2017-06-17 16:37:18.548184
+Create Date: 2017-06-18 12:23:12.677724
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'e5edc29eefdd'
+revision = '5a5b90fe77ae'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -27,9 +27,12 @@ def upgrade():
     op.create_table('roles',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(length=64), nullable=True),
+    sa.Column('default', sa.Boolean(), nullable=True),
+    sa.Column('permissions', sa.Integer(), nullable=True),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('name')
     )
+    op.create_index(op.f('ix_roles_default'), 'roles', ['default'], unique=False)
     op.create_table('users',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(length=64), nullable=True),
@@ -47,10 +50,10 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('account', sa.String(length=64), nullable=True),
     sa.Column('password', sa.String(length=64), nullable=True),
-    sa.Column('name_id', sa.Integer(), nullable=True),
+    sa.Column('user_id', sa.Integer(), nullable=True),
     sa.Column('game_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['game_id'], ['games.id'], ),
-    sa.ForeignKeyConstraint(['name_id'], ['users.id'], ),
+    sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('account')
     )
@@ -62,6 +65,7 @@ def downgrade():
     op.drop_table('gameaccounts')
     op.drop_index(op.f('ix_users_email'), table_name='users')
     op.drop_table('users')
+    op.drop_index(op.f('ix_roles_default'), table_name='roles')
     op.drop_table('roles')
     op.drop_table('games')
     # ### end Alembic commands ###

@@ -9,34 +9,29 @@ from ..models import User, Permission
 from ..emails import send_email
 from ..decorators import permission_required
 
-@fd.route('/', methods=['GET', 'POST'])
-@permission_required(Permission.FRIEND)
-@login_required
-def friends():
-    form = LoginForm()
-    if form.validate_on_submit():
-        friend = User.query.filter_by(name=form.name.data).first()
-        if friend:
-            session['name'] = friend.name
-            session['realname'] = friend.realname
-            session['pre'] = friend.name
-            return redirect(url_for('.friend', name=session['name']))
-        else:
-            abort(403)
-    return render_template('friends.html', form=form)
+# @fd.route('/', methods=['GET', 'POST'])
+# @permission_required(Permission.FRIEND)
+# @login_required
+# def friends():
+#     form = LoginForm()
+#     if form.validate_on_submit():
+#         friend = User.query.filter_by(name=form.name.data).first()
+#         if friend:
+#             session['name'] = friend.name
+#             session['realname'] = friend.realname
+#             session['pre'] = friend.name
+#             return redirect(url_for('.friend', name=session['name']))
+#         else:
+#             abort(403)
+#     return render_template('friends.html', form=form)
 
 @fd.route('/<name>')
 @permission_required(Permission.FRIEND)
 @login_required
 def friend(name):
-    pre = session.get('pre', None)
-    if name == pre:
-        friend = User.query.filter_by(name=name).first()
+    friend = User.query.filter_by(name=name).first()
+    if friend:
         accounts = friend.gameaccounts.all()
-        # begin = datetime.now()
-        # send_email(' Welcome', 'welcome', 'yourqq@qq.com', 'your163@163.com', name=session['realname'], accounts=accounts)
-        # end = datetime.now()
-        # print(end-begin)
-        return render_template('welcome.html', name=session['realname'], accounts=accounts)
+        return render_template('welcome.html', name=friend.realname, accounts=accounts)
     else:
-        abort(403)
+        abort(404)

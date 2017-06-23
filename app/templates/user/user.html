@@ -1,22 +1,24 @@
 {% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "user/_macros.html" as macros %}
 
-{% block title %}Epsilon - {{ user.name }}{% endblock %}
+{% block title %}Epsilon - {{ user.name }}'s posts{% endblock %}
+
+{%- block unique_css %}
+<link href="{{ url_for('static', filename = 'blog.css') }}" rel="stylesheet">
+{%- endblock unique_css %}
 
 {% block mid_content -%}
-<div class="page-header">
-    <img class="img-rounded profile-thumbnail">
-    <div class="profile-header">
-        <p>Welcome.</p>
-        <h3>Posts by {{ user.realname }}</h3>
-        {% include 'user/_posts.html' %}
-        <p>
-            {% if user == current_user %}
-            <a class="btn btn-default" href="{{ url_for('user.edit_profile') }}">Edit Profile</a>
-            {% endif %}
-            {% if current_user.is_administrator() %}
-            <a class="btn btn-danger" href="{{ url_for('user.edit_profile_admin', id=user.id) }}">Edit Profile [Admin]</a>
-            {% endif %}
-        </p>
-    </div>
+<div class="container">
+{% include 'user/_posts.html' %}
 </div>
 {%- endblock mid_content %}
+
+{% block footer -%}
+    <footer class="blog-footer">
+      <p>Template for <a href="https://getbootstrap.com">Bootstrap</a>, modified by <a href="http://www.mayangbin.com">@Epsilon</a>.</p>
+      <p>
+        <a href="#">Back to top</a>
+      </p>
+    </footer>
+{%- endblock footer %}

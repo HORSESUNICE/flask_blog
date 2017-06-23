@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "user/_macros.html" as macros %}
+
+{% block title %}{{ current_user.name }}'s Mainpage{% endblock %}
+
+{%- block unique_css %}
+<link href="{{ url_for('static', filename = 'blog.css') }}" rel="stylesheet">
+{%- endblock unique_css %}
+
+{% block mid_content %}
+<div class="container">
+    <div class="page-header">
+        <img class="img-rounded profile-thumbnail">
+        <div class="profile-header">
+            <p style="text-align:center;">{{ user.name }}</p>
+            <p style="text-align:center;">
+                {% if user == current_user %}
+                <a class="btn btn-default" href="{{ url_for('user.edit_profile') }}">编辑资料</a>
+                {% endif %}
+                {% if current_user.is_administrator() %}
+                <a class="btn btn-danger" href="{{ url_for('user.edit_profile_admin', id=user.id) }}">编辑资料 [Admin]</a>
+                {% endif %}
+            </p>
+            <h3 style="text-align:center;">FO</h3>
+            <p style="text-align:center;">
+                {% if current_user.can(Permission.FOLLOW) and user != current_user %}
+                    {% if not current_user.is_following(user) %}
+                    <a href="{{ url_for('user.follow', name=user.name) }}" class="btn btn-primary">Follow</a>
+                    {% else %}
+                    <a href="{{ url_for('user.unfollow', name=user.name) }}" class="btn btn-default">Unfollow</a>
+                    {% endif %}
+                {% endif %}
+                <a href="{{ url_for('user.followers', name=user.name) }}">Followers: <span>{{ user.followers.count() - 1 }}</span></a>
+                <a href="{{ url_for('user.followed_by', name=user.name) }}">Following: <span>{{ user.followed.count() - 1 }}</span></a>
+                {% if current_user.is_authenticated and user != current_user and user.is_following(current_user) %}
+                | <span class="label label-default">Follows you</span>
+                {% endif %}
+            </p>
+            {% include 'user/_posts.html' %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block footer -%}
+    <footer class="blog-footer">
+      <p>Template for <a href="https://getbootstrap.com">Bootstrap</a>, modified by <a href="http://www.mayangbin.com">@Epsilon</a>.</p>
+      <p>
+        <a href="#">Back to top</a>
+      </p>
+    </footer>
+{%- endblock footer %}

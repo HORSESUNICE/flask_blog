@@ -4,7 +4,7 @@ from flask_script import Manager, Shell
 from flask_migrate import Migrate, MigrateCommand
 
 from app import create_app, db
-from app.models import Game, User, Role, Gameaccount, Post
+from app.models import Game, User, Role, Gameaccount, Post, Follow
 
 app = create_app(os.environ.get('FLASK_CONFIG') or 'default')
 manager = Manager(app)
@@ -12,7 +12,7 @@ migrate = Migrate(app, db)
 
 def make_shell_context():
     return dict(app=app, db=db, User=User, Game=Game, Role=Role, Gameaccount=Gameaccount,
-                 Post=Post)
+                 Post=Post, Follow=Follow)
 manager.add_command("shell", Shell(make_context=make_shell_context))
 manager.add_command('db', MigrateCommand)
 
@@ -20,8 +20,8 @@ def account():
     from app import db
     from app.models import Game, User, Gameaccount, Role
 
-    man1 = User.query.filter_by(name='man1').first()
-    man2 = User.query.filter_by(name='man2').first()
+    man1 = User.query.filter_by(name='firstman').first()
+    man2 = User.query.filter_by(name='secondman').first()
     man3 = User.query.filter_by(name='man3').first()
     lol = Game.query.filter_by(name='LOL').first()
 

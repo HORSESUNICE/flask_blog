@@ -17,3 +17,11 @@ def permission_required(permission):
 
 def admin_required(f):
     return permission_required(Permission.ADMINISTER)(f)
+
+def isself(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if current_user.name != kwargs['name']:
+            abort(403)
+        return f(*args, **kwargs)
+    return decorated_function

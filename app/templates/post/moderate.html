@@ -2,26 +2,27 @@
 {% import "bootstrap/wtf.html" as wtf %}
 {% import "user/_macros.html" as macros %}
 
-{% block title %}Posts{% endblock %}
-
 {%- block unique_css %}
 <link href="{{ url_for('static', filename = 'blog.css') }}" rel="stylesheet">
 {%- endblock unique_css %}
 
+{% block title %}管理评论{% endblock %}
+
 {% block mid_content %}
-    <div class="container" name="blog-container">
+<div class="container">
+    <div class="page-header">
+        <h1>管理评论</h1>
+    </div>
+    {% set moderate = True %}
 
-      <div class="row">
+    {% include 'post/_comments.html' %}
 
-        <div class="col-sm-8 blog-main">
-          <div>
-            {{ wtf.quick_form(form) }}
-          </div>
-        </div><!-- /.blog-main -->
-
-      </div><!-- /.row -->
-
-    </div><!-- /.container -->
+    {% if pagination %}
+    <div class="pagination">
+        {{ macros.pagination_widget(pagination, 'post.moderate') }}
+    </div>
+    {% endif %}
+</div>
 {% endblock %}
 
 {% block footer -%}

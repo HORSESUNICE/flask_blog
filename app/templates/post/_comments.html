@@ -1,0 +1,31 @@
+<ul class="comments">
+    {% for comment in comments %}
+    <a href="{{ url_for('user.profile', name=comment.author.name) }}">
+        {{ comment.author.name }}
+    </a>
+    <br>
+    {{ moment(comment.timestamp).fromNow() }}
+    <br>
+        {% if comment.disabled %}
+        <p><i>This comment has been disabled by a moderator.</i></p>
+        {% endif %}
+        {% if moderate or not comment.disabled %}
+            {% if comment.body_html %}
+                {{ comment.body_html | safe }}
+            {% else %}
+                {{ comment.body }}
+            {% endif %}
+        {% endif %}
+        {% if current_user.can(Permission.MODERATE_COMMENTS) %}
+        <li><a href="{{ url_for('post.moderate') }}">Moderate Comments</a></li>
+        {% endif %}
+    {% if moderate %}
+        {% if comment.disabled %}
+        <a class="btn btn-default btn-xs" href="{{ url_for('post.moderate_enable', id=comment.id, page=page) }}">Enable</a>
+        {% else %}
+        <a class="btn btn-danger btn-xs" href="{{ url_for('post.moderate_disable', id=comment.id, page=page) }}">Disable</a>
+        {% endif %}
+    <br>
+    {% endif %}
+    {% endfor %}
+</ul>

@@ -15,7 +15,10 @@ def login():
         user = User.query.filter_by(name=form.name.data).first()
         if user is not None and user.verify_password(form.password.data):
             login_user(user, form.remember_me.data)
-            return redirect(url_for('user.username', name=current_user.name))
+            if user.is_friend():
+                return redirect(url_for('fd.friend', name=current_user.name))
+            else:
+                return redirect(url_for('user.mainpage', name=current_user.name))
         else:
             flash('Invalid user or password.')
     return render_template('auth/login.html', form=form)
@@ -23,12 +26,8 @@ def login():
 @auth.route('/logout')
 @login_required
 def logout():
-    if current_user.role_id == 2:
-        logout_user()
-        return redirect(url_for('main.index'))
-    else:
-        logout_user()
-        return redirect(url_for('.login'))
+    logout_user()
+    return redirect(url_for('.login'))
 
 @auth.route('/register', methods=['GET', 'POST'])
 def register():

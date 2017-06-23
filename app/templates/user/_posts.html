@@ -1,7 +1,7 @@
           {% for post in posts %}
           <div class="blog-post">
             <h2 class="blog-post-title">{{ post.title }}</h2>
-            <p class="blog-post-meta">{{ moment(post.timestamp).format('LLL') }} by <a href="{{ url_for('user.username', name=post.author.name) }}">{{ post.author.name }}</a></p>
+            <p class="blog-post-meta">{{ moment(post.timestamp).format('LLL') }} by <a href="{{ url_for('user.profile', name=post.author.name) }}">{{ post.author.name }}</a></p>
             <div class="post-body">
                 {% if post.body_html %}
                     {{ post.body_html | safe }}
@@ -12,15 +12,18 @@
             <div class="post-footer">
                 {% if current_user == post.author %}
                 <a href="{{ url_for('post.edit', id=post.id) }}">
-                    <span class="label label-primary">Edit</span>
+                    <span class="label label-primary">编辑</span>
                 </a>
                 {% elif current_user.is_administrator() %}
                 <a href="{{ url_for('post.edit', id=post.id) }}">
-                    <span class="label label-danger">Edit [Admin]</span>
+                    <span class="label label-danger">编辑 [Admin]</span>
                 </a>
                 {% endif %}
                 <a href="{{ url_for('post.article', id=post.id) }}">
-                    <span class="label label-default">Permalink</span>
+                    <span class="label label-default">文章链接</span>
+                </a>
+                <a href="{{ url_for('post.article', id=post.id) }}#comments">
+                    <span class="label label-primary">{{ post.comments.count() }} 评论</span>
                 </a>
             </div>
           </div>
